@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog
-import cv2
+import cv2,os
 from PIL import Image, ImageTk
 
+image_file_name=""
 
 def setInLabel(imageToSet,img_lbl):
     # Convert OpenCV image to PIL format
@@ -27,7 +28,10 @@ def setInLabel(imageToSet,img_lbl):
     
 def upload_image():
     global image_path
-    image_path = filedialog.askopenfilename()  # Opens a file dialog to select an image
+    image_path = filedialog.askopenfilename(initialdir=os.path.abspath("./color-to-gray-scale-image-conversion/original_images"))
+    global image_file_name
+    image_file_name=os.path.basename(image_path)
+    
     print("Image uploaded:", image_path)
     
     # Read the uploaded image using OpenCV
@@ -57,9 +61,14 @@ def convert_to_grayscale():
                
                 # Assign grayscale value to each channel (R, G, B)
                 grayscale_image[y, x] = [gray, gray, gray]
-        # cv2.imwrite("grayscale_image.jpg", grayscale_image)
         
         setInLabel(grayscale_image,img_lbl1)
+        global image_file_name
+        save_path = filedialog.asksaveasfile(initialdir=os.path.abspath("./color-to-gray-scale-image-conversion/converted_images")
+                    ,defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")],initialfile=image_file_name)
+        if save_path:
+            cv2.imwrite(save_path.name, grayscale_image)
+            print("Image converted to grayscale and saved.")
         print("Image converted to grayscale.")
     else:
         print("Please upload an image first.")
