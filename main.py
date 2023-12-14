@@ -87,16 +87,22 @@ class Action:
             print("Error while converting: ",e)
     def update_recent_act(self):
         j = len(list(self.input_directory.glob("*")))
+        k = j
+        print("new len",j)
         for i in range(4):
             image_path = os.path.join(obj.input_directory,(str)(j)+".jpg")
             image = cv2.imread(image_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
             obj.setImage(image,real_images[i])
+            print("ager ",real_images[i].cget("text"))
+            real_images[i].config(text=(str)(k-i))
+            print("porer ",real_images[i].cget("text"))
             
             image_path = os.path.join(obj.output_directory,(str)(j)+".jpg")
             image = cv2.imread(image_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
             obj.setImage(image,gray_images[i])
+            gray_images[i].config(text=(str)(k-i))
             j-=1
 
 obj=Action()
@@ -134,8 +140,9 @@ recent_act_title = tk.Label(recent_act_frame,bg="#e5e5e5",fg="black",font=("Aria
 recent_act_title.place(rely=0.001,relheight=0.08,relx=0.25)
 
 recent_act_images_frames = [tk.Frame(recent_act_frame,bg="white") for i in range(4)]
-real_images = [tk.Label(recent_act_images_frames[i],text=str(i+1)) for i in range(4)]
-gray_images = [tk.Label(recent_act_images_frames[i],text=str(i+1)) for i in range(4)]
+j = len(list(obj.input_directory.glob("*")))
+real_images = [tk.Label(recent_act_images_frames[i],text=str(j-i)) for i in range(4)]
+gray_images = [tk.Label(recent_act_images_frames[i],text=str(j-i)) for i in range(4)]
 for i in range(4):
     recent_act_images_frames[i].place(relx=0.02,relwidth=0.96,rely=0.1+i*(0.22),relheight=0.2)
     recent_act_images_frames[i].bind("<Enter>", lambda e, btn=recent_act_images_frames[i],clr="black": on_enter(e, btn,clr))
